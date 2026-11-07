@@ -1,0 +1,7 @@
+.DS_Store
+*.log
+.env
+.env.local
+agents/
+node_modules/
+**/supabase/.temp/
