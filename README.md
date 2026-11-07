@@ -14,6 +14,7 @@ Code writes and reads the log, not agents. The factory's GitHub Actions dispatch
 | `supabase/migrations/20261107000000_context_log.sql` | The `agents` registry, the insert-only `context_log` table, its write functions `log_context()` and `log_context_batch()`, `search_context()`, Row Level Security, grants and the triggers that block edits, deletes and `TRUNCATE` |
 | `scripts/context.ts` | Zero-dependency command-line tool: `log`, `search`, `check`, `ingest` |
 | `scripts/provision.ts` | Admin tool: `add`, `deactivate`, `list` writer identities |
+| `scripts/verify.sh` | Live check of every guarantee below against the linked project. Its test rows all use `verify-` topics and only those are cleaned up, so it is safe to run on a log with real entries |
 
 ## The data model
 
