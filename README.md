@@ -88,7 +88,17 @@ Rules, all enforced by `check` and `ingest`:
 1. Put the project's URL, secret key and publishable key in `scripts/.env.local` (git-ignored) as `SUPABASE_URL`, `SUPABASE_SECRET_KEY`, `SUPABASE_PUBLISHABLE_KEY`.
 2. `supabase link --project-ref <ref>`, then `supabase db push`.
 3. `cd scripts && npm install`, then `node provision.ts add <id>` for each writer: `factory-dispatch`, `austin-claude`, `shawn-claude`. Each writes `scripts/agents/<id>.env` (mode 600, git-ignored).
-4. The four values in `agents/factory-dispatch.env` become GitHub Actions secrets in `vibing-out/vbt`. People's files are handed out privately.
+4. The four values in `agents/factory-dispatch.env` are GitHub Actions secrets in `vibing-out/vbt` (set 2026-11-07). The Supabase ones carry a `CONTEXT_` prefix so they can't collide with the app's own Supabase secrets, so a workflow step maps them back to the names `context.ts` reads:
+
+   ```yaml
+   env:
+     SUPABASE_URL: ${{ secrets.CONTEXT_SUPABASE_URL }}
+     SUPABASE_PUBLISHABLE_KEY: ${{ secrets.CONTEXT_SUPABASE_PUBLISHABLE_KEY }}
+     CONTEXT_EMAIL: ${{ secrets.CONTEXT_EMAIL }}
+     CONTEXT_PASSWORD: ${{ secrets.CONTEXT_PASSWORD }}
+   ```
+
+   To rotate them: `node provision.ts deactivate factory-dispatch` cannot be undone for that id, so add a new id (for example `factory-dispatch-2`) and set the secrets again from its file. People's files are handed out privately.
 5. To retire a writer: `node provision.ts deactivate <id>`. It bans the sign-in and marks the registry row inactive; it never deletes.
 
 Test rows can be removed only with the secret key (the `service_role`), through the REST API or the SQL editor.
